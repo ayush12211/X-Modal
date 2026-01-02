@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 function XModal() {
@@ -10,6 +10,21 @@ function XModal() {
     dob: "",
   });
 
+  // 🔑 This effect is CRITICAL for Cypress outside-click test
+  useEffect(() => {
+    const handleOutsideClick = () => {
+      setIsOpen(false);
+    };
+
+    if (isOpen) {
+      document.addEventListener("click", handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [isOpen]);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -19,21 +34,25 @@ function XModal() {
 
     const { email, phone, dob } = formData;
 
+    // Email validation
     if (!email.includes("@")) {
       alert("Invalid email. Please check your email address.");
       return;
     }
 
+    // Phone validation
     if (!/^\d{10}$/.test(phone)) {
       alert("Invalid phone number. Please enter a 10-digit phone number.");
       return;
     }
 
+    // DOB validation
     if (new Date(dob) > new Date()) {
-      alert("Invalid phone number. Please enter a 10-digit phone number.");
+      alert("Invalid date of birth");
       return;
     }
 
+    // Reset to initial render
     setFormData({
       username: "",
       email: "",
@@ -44,23 +63,25 @@ function XModal() {
   };
 
   return (
-    <div onClick={() => isOpen && setIsOpen(false)}>
+    <>
       {/* Heading */}
       <h1
         style={{
           position: "absolute",
           top: "20px",
-          left: "500px",
+          left: "50%",
+          transform: "translateX(-50%)",
         }}
       >
         User details Modal
       </h1>
 
-      {/* Open button */}
+      {/* Open Form Button */}
       {!isOpen && (
         <button
+          style={{ marginTop: "100px" }}
           onClick={(e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // prevent document click
             setIsOpen(true);
           }}
         >
@@ -73,7 +94,7 @@ function XModal() {
         <div className="modal">
           <div
             className="modal-content"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()} // 🔥 prevents closing when clicking inside
           >
             <form onSubmit={handleSubmit}>
               <div>
@@ -127,7 +148,7 @@ function XModal() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
