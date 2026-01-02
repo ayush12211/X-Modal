@@ -57,73 +57,87 @@ function XModal() {
 
   return (
     <>
-    <h1  style={{
-    position: "absolute",
-    top: "20px",
-    left: "500px",
-    // display:"flex",
-    // justifyContent:"center"
-  }}>User details Modal</h1>
-    <div className="modal" onClick={handleOutsideClick}>
-      {!isOpen && (
-        <button onClick={() => setIsOpen(true)}>Open Form</button>
-      )}
+  <h1
+    style={{
+      position: "absolute",
+      top: "20px",
+      left: "500px",
+    }}
+  >
+    User details Modal
+  </h1>
 
-      {isOpen && (
-        <div className="modal-content" ref={modalRef}>
-          <form onSubmit={handleSubmit}>
-            <div>
-              <label>Username:</label>
-              <input
-                id="username"
-                type="text"
-                value={formData.username}
-                onChange={handleChange}
-                required
-              />
-            </div>
+  {!isOpen && (
+    <button style={{
+      position: "absolute",
+      top: "400px",
+      left: "640px",
+    }} onClick={() => setIsOpen(true)}>Open Form</button>
+  )}
 
-            <div>
-              <label>Email:</label>
-              <input
-                id="email"
-                type="text"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
+  {isOpen && (
+    <div
+      className="modal"
+      onClick={() => setIsOpen(false)}   // 👈 outside click closes modal
+    >
+      <div
+        className="modal-content"
+        onClick={(e) => e.stopPropagation()} // 👈 prevent inside click
+      >
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label>Username:</label>
+            <input
+              id="username"
+              type="text"
+              value={formData.username}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-            <div>
-              <label>Phone Number:</label>
-              <input
-                id="phone"
-                type="text"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div>
+            <label>Email:</label>
+            <input
+              id="email"
+              type="text"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-            <div>
-              <label>Date of Birth:</label>
-              <input
-                id="dob"
-                type="date"
-                value={formData.dob}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div>
+            <label>Phone Number:</label>
+            <input
+              id="phone"
+              type="text"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-            <button type="submit" className="submit-button">
-              Submit
-            </button>
-          </form>
-        </div>
-      )}
+          <div>
+            <label>Date of Birth:</label>
+            <input
+              id="dob"
+              type="date"
+              value={formData.dob}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <button type="submit" className="submit-button">
+            Submit
+          </button>
+        </form>
+      </div>
     </div>
-    </>
+  )}
+</>
+
   );
 }
 
