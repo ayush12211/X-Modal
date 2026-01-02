@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./App.css";
 
 function XModal() {
@@ -9,21 +9,6 @@ function XModal() {
     phone: "",
     dob: "",
   });
-
-  // 🔑 This effect is CRITICAL for Cypress outside-click test
-  useEffect(() => {
-    const handleOutsideClick = () => {
-      setIsOpen(false);
-    };
-
-    if (isOpen) {
-      document.addEventListener("click", handleOutsideClick);
-    }
-
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
-  }, [isOpen]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -52,7 +37,7 @@ function XModal() {
       return;
     }
 
-    // Reset to initial render
+    // Reset form and close modal
     setFormData({
       username: "",
       email: "",
@@ -80,10 +65,7 @@ function XModal() {
       {!isOpen && (
         <button
           style={{ marginTop: "100px" }}
-          onClick={(e) => {
-            e.stopPropagation(); // prevent document click
-            setIsOpen(true);
-          }}
+          onClick={() => setIsOpen(true)}
         >
           Open Form
         </button>
@@ -91,10 +73,13 @@ function XModal() {
 
       {/* Modal */}
       {isOpen && (
-        <div className="modal">
+        <div
+          className="modal"
+          onMouseDown={() => setIsOpen(false)}   
+        >
           <div
             className="modal-content"
-            onClick={(e) => e.stopPropagation()} // 🔥 prevents closing when clicking inside
+            onMouseDown={(e) => e.stopPropagation()} 
           >
             <form onSubmit={handleSubmit}>
               <div>
